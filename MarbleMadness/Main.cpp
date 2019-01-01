@@ -2,6 +2,14 @@
 #include <SFML\Graphics.hpp>
 #include <Box2D/Box2D.h>
 
+#include "Entity.h"
+#include "Wall.h"
+#include "Bullet.h"
+#include "Marble.h"
+#include "Player.h"
+#include "Spawner.h"
+#include "Observer.h"
+
 using namespace std;
 using namespace sf;
 
