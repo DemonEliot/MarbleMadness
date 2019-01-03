@@ -29,6 +29,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Spawner.h" />
     <ClInclude Include="Wall.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

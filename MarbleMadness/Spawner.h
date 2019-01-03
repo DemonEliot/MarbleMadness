@@ -3,8 +3,6 @@
 #include <vector>
 #include "Entity.h"
 
-using namespace std;
-
 class Spawner {
 public:
 	Spawner() {};

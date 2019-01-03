@@ -1,17 +1,19 @@
 #pragma once
 
-#include "Vector2.h"
+#include <SFML\Graphics.hpp>
+#include <Box2D/Box2D.h>
 
 using namespace std;
+using namespace sf;
 
 class Entity {
 public:
 	Entity() {};
-	Entity(Vector2* spawnPosition, Vector2* objSize) 
-	{ startPos = *spawnPosition; size = *objSize; };
+	Entity(Vector2f* spawnPosition, b2World* world) 
+	{ startPos = *spawnPosition;};
 	virtual ~Entity() {};
 
 protected:
-	Vector2 startPos;
-	Vector2 size;
+	Vector2f startPos;
+	float scalingFactor;
 };

@@ -1,20 +1,18 @@
 #pragma once
 
 #include "Entity.h"
-#include "Vector2.h"
-
-using namespace std;
 
 class Bullet : public Entity
 {
 public:
-	Bullet(Vector2* spawnPosition, Vector2* objSize)
+	Bullet(Vector2f* spawnPosition, Vector2f* objSize)
 	{
 		startPos = *spawnPosition; size = *objSize; currentPos = *spawnPosition;
 	};
 
 
 private:
-	Vector2 currentPos;
+	Vector2f currentPos;
 	Entity* bulletOrigin;
+	Vector2f size;
 };

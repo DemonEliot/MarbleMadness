@@ -1,8 +1,6 @@
 #pragma once
 #include <iostream>
 
-using namespace std;
-
 enum class EntityType { player, wall};
 
 class Observer {
