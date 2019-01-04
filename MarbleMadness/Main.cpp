@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <SFML\Graphics.hpp>
 #include <Box2D/Box2D.h>
 
@@ -10,6 +11,7 @@
 #include "Spawner.h"
 #include "Observer.h"
 #include "World.h"
+#include "TextInterpreter.h"
 
 using namespace std;
 using namespace sf;
@@ -26,6 +28,11 @@ void main()
 
 	World* gameWorld = new World();
 
+	GenericSpawner* spawner = new GenericSpawner(gameWorld);
+
+	TextInterpreter textInterpreter(spawner);
+
+	/*
 	Vector2f* spawn = new Vector2f;
 	Vector2f* size = new Vector2f;
 	Color* color = new Color;
@@ -51,12 +58,12 @@ void main()
 	*color = Color::Green;
 	Wall* wall4 = new Wall(spawn, size, color, gameWorld->getWorld());
 
-	float* circleSize = new float;
 	*spawn = Vector2f(500.0f, 500.0f);
+	float* circleSize = new float;
 	*circleSize = 10.0f;
 	*color = Color::Blue;
 	Marble* marble = new Marble(spawn, circleSize, color, gameWorld->getWorld());
-
+	*/
 
 	//Fixed time loop
 	float timeStep = 1.0f / 120.0f;

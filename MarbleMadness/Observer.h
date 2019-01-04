@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 
-enum class EntityType { player, wall};
+enum class EntityType { player, wall, bullet};
 
 class Observer {
 public:
@@ -9,7 +9,7 @@ public:
 	~Observer() {};
 
 	void updateScore(EntityType entity);
-
+	void collision();
 private:
 	int score;
 };
@@ -24,5 +24,9 @@ void Observer::updateScore(EntityType entity)
 		case EntityType::wall:
 			break;
 	}
+}
+
+void Observer::collision()
+{
 
 }

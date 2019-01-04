@@ -28,6 +28,7 @@
     <ClInclude Include="Observer.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Spawner.h" />
+    <ClInclude Include="TextInterpreter.h" />
     <ClInclude Include="Wall.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>

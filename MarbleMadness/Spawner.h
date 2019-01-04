@@ -3,38 +3,56 @@
 #include <vector>
 #include "Entity.h"
 
-class Spawner {
+class GenericSpawner {
 public:
-	Spawner() {};
-	~Spawner() 
+	GenericSpawner(World* world) { gameWorld = world; };
+	~GenericSpawner();
+
+	void createFromText(string entity, vector <float> fVector, Color textColor )
 	{
-		//Should let resouce manager handle this
-		//Deconstructor: while there's entities left, delete and pop back the last one
-		while (spawnedEntities.size() != 0)
+		if (entity == "Wall")
 		{
-			delete spawnedEntities.back();
-			spawnedEntities.pop_back();
+			*spawn = Vector2f(fVector[0], fVector[1]);
+			*size = Vector2f(fVector[2], fVector[3]);
+			*color = textColor;
+			Wall* wall1 = new Wall(spawn, size, color, gameWorld->getWorld());
+			spawnPrototypes.push_back(wall1);
 		}
-	};
-
-	void addEntity(Entity* newPrototype) 
-	{ 
-		spawnedEntities.push_back(newPrototype); 
-	};
-
-	Entity* getEntity(int i)
-	{ 
-		if (spawnedEntities.size() - 1 < i)
+		else if (entity == "Marble")
 		{
-			throw std::out_of_range("Tried to access out of the range of the current vector size!");
+			*spawn = Vector2f(fVector[0], fVector[1]);
+			*circleSize = float(fVector[2]);
+			*color = textColor;
+			Marble* marble1 = new Marble(spawn, circleSize, color, gameWorld->getWorld());
+			spawnPrototypes.push_back(marble1);
 		}
-		else 
-		{ 
-			return spawnedEntities[i];
+		else
+		{
+			cerr << "Something went wrong with parsing in the text file into the spawner!" << endl;
+			exit(1);
 		}
-		
-	};
+	}
+	void addPrototype(Entity* newPrototype) { spawnPrototypes.push_back(newPrototype); };
+	Entity* getPrototype(int i) { return spawnPrototypes.at(i); };
 
 private:
-	vector<Entity*> spawnedEntities;
+	vector<Entity*> spawnPrototypes;
+	Vector2f* spawn = new Vector2f;
+	Vector2f* size = new Vector2f;
+	Color* color = new Color;
+	float* circleSize = new float;
+	World* gameWorld;
 };
+
+GenericSpawner::~GenericSpawner()
+{
+	while (spawnPrototypes.size() != 0)
+	{
+		delete spawnPrototypes.back();
+		spawnPrototypes.pop_back();
+	}
+	delete spawn;
+	delete size;
+	delete color;
+	delete circleSize;
+}
