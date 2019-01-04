@@ -80,7 +80,7 @@ void TextInterpreter::interpretTextFile(string* name)
 		}
 	}
 
-	textFile->close;
+	textFile->close();
 }
 
 void TextInterpreter::createWallText()

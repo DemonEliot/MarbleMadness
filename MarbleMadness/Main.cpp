@@ -32,6 +32,9 @@ void main()
 
 	TextInterpreter textInterpreter(spawner);
 
+	Marble* marble = spawner->getMarble(0);
+	vector <Wall*> wallVectors = spawner->getWall();
+
 	/*
 	Vector2f* spawn = new Vector2f;
 	Vector2f* size = new Vector2f;
@@ -118,10 +121,10 @@ void main()
 
 		// Draw the scene!
 		window.clear(Color::Black);
-		window.draw(wall1->getGraphicBody());
-		window.draw(wall2->getGraphicBody());
-		window.draw(wall3->getGraphicBody());
-		window.draw(wall4->getGraphicBody());
+		for (int i = 0; i < wallVectors.size() - 1; i++)
+		{
+			window.draw(wallVectors[i]->getGraphicBody());
+		}
 		window.draw(marble->getMarbleGraphic());
 		window.display();
 	}
