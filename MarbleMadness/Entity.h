@@ -2,6 +2,7 @@
 
 #include <SFML\Graphics.hpp>
 #include <Box2D/Box2D.h>
+#include "World.h"
 
 using namespace std;
 using namespace sf;

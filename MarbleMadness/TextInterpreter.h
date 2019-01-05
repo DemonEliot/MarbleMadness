@@ -10,17 +10,16 @@ using namespace std;
 class TextInterpreter
 {
 public:
-	TextInterpreter(GenericSpawner* spawner_ptr) { filePath = new string("$(ProjectDir)\\TextFiles\\"); spawner = spawner_ptr; };
-	TextInterpreter(string* newFilePath, GenericSpawner* spawner) { filePath = newFilePath; };
+	TextInterpreter(GenericSpawner* spawner_ptr) { filePath = new string("TextFiles\\"); spawner = spawner_ptr; };
+	TextInterpreter(string* newFilePath, GenericSpawner* spawner_ptr) { filePath = newFilePath; spawner = spawner_ptr; };
 	~TextInterpreter() {};
 
 	void initializeTextFiles();
-	void interpretTextFile(string* name);
+	void interpretLevelFile();
 	string* getFilePath();
-	string* setFilePath(string* newFilePath);
+	void setFilePath(string* newFilePath);
 
 private:
-	ifstream* textFile;
 	string* filePath;
 	string* fileName;
 	string line; 
@@ -34,6 +33,9 @@ private:
 	string sColor;
 	Color color;
 	GenericSpawner* spawner;
+	string levelsPath = "TextFiles\\Levels.txt";
+	vector <string> levelVector;
+	int levelCounter = 0;
 
 	void createWallText();
 	void createMarbleText();
@@ -42,45 +44,62 @@ private:
 
 void TextInterpreter::initializeTextFiles()
 {
+	ifstream* textFile = new ifstream(levelsPath, ifstream::in);
+	if (!textFile->is_open())
+	{
+		cerr << "Text file unable to open" << endl;
+		exit(1);
+	}
 
+	while (getline(*textFile, line))
+	{
+		if (line != "")
+		{
+			levelVector.push_back(line);
+		}
+	}
+	textFile->close();
+	delete textFile;
 }
 
-void TextInterpreter::interpretTextFile(string* name)
+void TextInterpreter::interpretLevelFile()
 {
-	textFile->open(*filePath);
-	if (!textFile) 
+	
+	ifstream* textFile = new ifstream(*filePath + levelVector[levelCounter] + ".txt", ifstream::in);
+	if (!textFile->is_open())
 	{ 
 		cerr << "Text file unable to open" << endl;
 		exit(1);
 	}
 
+	levelCounter++;
 	stringPos = 0;
 
 	while (getline(*textFile, line))
 	{
-		if (!line.empty)
+		stringPos = line.find("(", stringPos);
+		if (stringPos != string::npos)
 		{
-			stringPos = line.find("(", stringPos);
-			if (stringPos != string::npos)
+			stringPos2 = line.find(")", stringPos);
+			if (stringPos2 != string::npos)
 			{
-				stringPos2 = line.find(")", stringPos);
-				if (stringPos2 != string::npos)
-				{
-					tempString = line.substr(stringPos + 1, stringPos2 - stringPos - 2);
+				tempString = line.substr(stringPos + 1, stringPos2 - stringPos - 1);
 					
-					// Using if ladder because of c++ lack of switch/string functionality
-					if (tempString == "Wall") { createWallText(); }
-					else if (tempString == "Marble") { createMarbleText(); }
-					else 
-					{	cerr << "Text file contains error" << endl; 
-						exit(1); 
-					}
+				// Using if ladder because of c++ lack of switch/string functionality
+				if (tempString == "Wall") { createWallText(); }
+				else if (tempString == "Marble") { createMarbleText(); }
+				else 
+				{	cerr << "Text file contains error" << endl; 
+					exit(1); 
 				}
 			}
 		}
+		stringPos = 0;
+		stringPos2 = 0;
 	}
 
 	textFile->close();
+	delete textFile;
 }
 
 void TextInterpreter::createWallText()
@@ -93,7 +112,7 @@ void TextInterpreter::createWallText()
 		stringPos2 = line.find(")", stringPos);
 		if (stringPos2 != string::npos)
 		{
-			tempString = line.substr(stringPos + 1, stringPos2 - stringPos - 2);
+			tempString = line.substr(stringPos + 1, stringPos2 - stringPos - 1);
 
 			// Very hardcoded right here. I'm using the fact I know the text files go Floats, Floats, Color.
 			if (i != 2)
@@ -115,7 +134,7 @@ void TextInterpreter::createWallText()
 		}
 	}
 	spawner->createFromText("Wall", fVector, color);
-	fVector.clear;
+	fVector.clear();
 }
 
 void TextInterpreter::createMarbleText()
@@ -128,7 +147,7 @@ void TextInterpreter::createMarbleText()
 		stringPos2 = line.find(")", stringPos);
 		if (stringPos2 != string::npos)
 		{
-			tempString = line.substr(stringPos + 1, stringPos2 - stringPos - 2);
+			tempString = line.substr(stringPos + 1, stringPos2 - stringPos - 1);
 
 			// Very hardcoded right here. I'm using the fact I know the text files go Floats, Float, Color.
 			if (i == 0)
@@ -155,7 +174,7 @@ void TextInterpreter::createMarbleText()
 		}
 	}
 	spawner->createFromText("Marble", fVector, color);
-	fVector.clear;
+	fVector.clear();
 }
 
 Color TextInterpreter::stringToColor(string sColor)
@@ -202,7 +221,7 @@ string* TextInterpreter::getFilePath()
 	return filePath;
 }
 
-string* TextInterpreter::setFilePath(string* newFilePath)
+void TextInterpreter::setFilePath(string* newFilePath)
 {
 	filePath = newFilePath;
 }

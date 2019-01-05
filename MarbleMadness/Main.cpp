@@ -2,6 +2,7 @@
 #include <fstream>
 #include <SFML\Graphics.hpp>
 #include <Box2D/Box2D.h>
+#include <vector>
 
 #include "Entity.h"
 #include "Wall.h"
@@ -31,8 +32,11 @@ void main()
 	GenericSpawner* spawner = new GenericSpawner(gameWorld);
 
 	TextInterpreter textInterpreter(spawner);
+	textInterpreter.initializeTextFiles();
+	textInterpreter.interpretLevelFile();
 
-	Marble* marble = spawner->getMarble(0);
+	vector <Marble*> marbleVectors = spawner->getMarble();
+	Marble* marble = marbleVectors[0];
 	vector <Wall*> wallVectors = spawner->getWall();
 
 	/*
@@ -91,20 +95,20 @@ void main()
 		{
 			if (Keyboard::isKeyPressed(Keyboard::Left))
 			{
-				marble->updateLinearVelocity(b2Vec2(-1.0f, 0.0f));
+				marble->updateLinearVelocity(b2Vec2(-0.1f, 0.0f));
 			}
 
 			if (Keyboard::isKeyPressed(Keyboard::Right))
 			{
-				marble->updateLinearVelocity(b2Vec2(1.0f, 0.0f));
+				marble->updateLinearVelocity(b2Vec2(0.1f, 0.0f));
 			}
 			if (Keyboard::isKeyPressed(Keyboard::Up))
 			{
-				marble->updateLinearVelocity(b2Vec2(0.0f, 1.0f));
+				marble->updateLinearVelocity(b2Vec2(0.0f, 0.1f));
 			}
 			if (Keyboard::isKeyPressed(Keyboard::Down))
 			{
-				marble->updateLinearVelocity(b2Vec2(0.0f, -1.0f));
+				marble->updateLinearVelocity(b2Vec2(0.0f, -0.1f));
 			}
 
 			if (Keyboard::isKeyPressed(Keyboard::Escape))
@@ -121,11 +125,14 @@ void main()
 
 		// Draw the scene!
 		window.clear(Color::Black);
-		for (int i = 0; i < wallVectors.size() - 1; i++)
+		for (int i = 0; i < wallVectors.size(); i++)
 		{
 			window.draw(wallVectors[i]->getGraphicBody());
 		}
-		window.draw(marble->getMarbleGraphic());
+		for (int i = 0; i < marbleVectors.size(); i++)
+		{
+			window.draw(marbleVectors[i]->getMarbleGraphic());
+		}
 		window.display();
 	}
 }

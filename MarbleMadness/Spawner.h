@@ -12,17 +12,17 @@ public:
 	{
 		if (entity == "Wall")
 		{
-			*spawn = Vector2f(fVector[0], fVector[1]);
-			*size = Vector2f(fVector[2], fVector[3]);
-			*color = textColor;
+			spawn = new Vector2f(fVector[0], fVector[1]);
+			size = new Vector2f(fVector[2], fVector[3]);
+			color = &textColor;
 			Wall* wall = new Wall(spawn, size, color, gameWorld->getWorld());
 			spawnWalls.push_back(wall);
 		}
 		else if (entity == "Marble")
 		{
-			*spawn = Vector2f(fVector[0], fVector[1]);
-			*circleSize = float(fVector[2]);
-			*color = textColor;
+			spawn = new Vector2f(fVector[0], fVector[1]);
+			circleSize = new float(fVector[2]);
+			color = &textColor;
 			Marble* marble = new Marble(spawn, circleSize, color, gameWorld->getWorld());
 			spawnMarbles.push_back(marble);
 		}
@@ -31,7 +31,7 @@ public:
 			cerr << "Something went wrong with parsing in the text file into the spawner!" << endl;
 			exit(1);
 		}
-	}
+	};
 	//void addPrototype(Entity* newPrototype) { spawnPrototypes.push_back(newPrototype); };
 	//Entity* getPrototype(int i) { return spawnPrototypes.at(i); };
 
@@ -67,4 +67,4 @@ GenericSpawner::~GenericSpawner()
 	delete size;
 	delete color;
 	delete circleSize;
-}
+};
