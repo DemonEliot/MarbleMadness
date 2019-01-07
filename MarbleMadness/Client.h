@@ -1,4 +1,3 @@
-#pragma once
 #include <iostream>
 #include <SFML\Graphics.hpp>
 #include <enet\enet.h>
@@ -6,7 +5,7 @@
 using namespace std;
 using namespace sf;
 
-class Client 
+class Client
 {
 public:
 	Client() {

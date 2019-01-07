@@ -22,7 +22,6 @@ public:
 		wallBox.SetAsBox(wallHalfWidth, wallHalfHeight);
 
 		b2BodyDef wallBodyDef;
-		//physicsPos = *physicsBodyPos;
 		wallBodyDef.position.Set((startPos.x + size.x/2) / scalingFactor, (startPos.y + size.y/2) / scalingFactor * -1.0f);
 
 		b2Body* wallBody = world->CreateBody(&wallBodyDef);

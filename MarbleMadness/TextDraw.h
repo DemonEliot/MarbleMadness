@@ -6,6 +6,7 @@
 using namespace std;
 using namespace sf;
 
+// Class for setting the font for the score text
 class TextDraw
 {
 public:

@@ -7,7 +7,6 @@
 
 #include "Entity.h"
 #include "Wall.h"
-#include "Bullet.h"
 #include "Marble.h"
 #include "Spawner.h"
 #include "World.h"
@@ -25,6 +24,7 @@ void main()
 
 	GenericSpawner* spawner = new GenericSpawner(gameWorld);
 
+	// Text interpreter loads in the text files, so I can know how many levels can be loaded, and also loads the first level.
 	TextInterpreter textInterpreter(spawner);
 	textInterpreter.initializeTextFiles();
 	textInterpreter.interpretLevelFile();
@@ -72,6 +72,7 @@ void main()
 			switch (gameClient->getENetEvent()->type) 
 			{
 			case ENET_EVENT_TYPE_RECEIVE:
+				// When receiving a new package, update the position of the other marbles
 				cout << "Packet received!\n";
 				memcpy(newPosition, gameClient->getENetEvent()->packet->data, gameClient->getENetEvent()->packet->dataLength);
 				cout << newPosition->x << "," << newPosition->y << "\n";
@@ -185,8 +186,19 @@ void main()
 		gameClient->getWindow()->display();
 	}
 
+	// Cleanup
 	enet_host_destroy(gameClient->getClient());
 	atexit(enet_deinitialize);
 
+	delete spawner;
+	delete gameClient;
+	while (wallVectors.size() != 0)
+	{
+		wallVectors.pop_back();
+	}
+	while (marbleVectors.size() != 0)
+	{
+		marbleVectors.pop_back();
+	}
 	delete gameWorld;
 }

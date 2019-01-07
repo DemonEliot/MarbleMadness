@@ -33,8 +33,6 @@ public:
 			cerr << "Something went wrong with parsing in the text file into the spawner!" << endl;
 		}
 	};
-	//void addPrototype(Entity* newPrototype) { spawnPrototypes.push_back(newPrototype); };
-	//Entity* getPrototype(int i) { return spawnPrototypes.at(i); };
 
 	Wall* getWall(int i) { return spawnWalls[i]; };
 	vector <Wall*> getWall() { return spawnWalls; };
@@ -42,7 +40,6 @@ public:
 	vector <Marble*> getMarble() { return spawnMarbles; };
 
 private:
-	//vector<Entity*> spawnPrototypes;
 	vector<Wall*> spawnWalls;
 	vector<Marble*> spawnMarbles;
 	Vector2f* spawn;

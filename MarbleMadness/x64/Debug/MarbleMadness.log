@@ -1,3 +1,3 @@
 ﻿  Main.cpp
-c:\users\eliot\desktop\university work\advanced games programming\marblemadness\marblemadness\main.cpp(23): warning C4326: return type of 'main' should be 'int' instead of 'void'
+c:\users\eliot\desktop\university work\advanced games programming\marblemadness\marblemadness\main.cpp(22): warning C4326: return type of 'main' should be 'int' instead of 'void'
   MarbleMadness.vcxproj -> C:\Users\Eliot\Desktop\University Work\Advanced Games Programming\MarbleMadness\x64\Debug\MarbleMadness.exe
