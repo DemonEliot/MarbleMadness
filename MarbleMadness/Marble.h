@@ -5,7 +5,6 @@
 class Marble : public Entity
 {
 public:
-	Marble() {};
 	Marble(Vector2f* spawnPosition, float* objSize, Color* newColor, b2World* world)
 	{
 		startPos = *spawnPosition; size = *objSize; color = *newColor;
@@ -38,7 +37,15 @@ public:
 		marbleBody->CreateFixture(&marbleFixtureDef);
 
 		updatePosition();
+
+		m_numContacts = 0;
+		marbleBody->SetUserData(this);
 	};
+	~Marble() {};
+
+	// Everytime something collision starts or ends, the number changes
+	void startContact() { m_numContacts++; }
+	void endContact() { m_numContacts--; }
 
 	void updatePosition()
 	{
@@ -65,7 +72,12 @@ public:
 		return marbleBody;
 	}
 
-protected:
+	int getNumContacts()
+	{
+		return m_numContacts;
+	}
+
+private:
 	CircleShape marble;
 	b2Body* marbleBody;
 	float size;
@@ -73,4 +85,5 @@ protected:
 	Vector2f marbleGraphicsPosition;
 	b2Vec2 marblePhysicsPosition;
 	float circleRadius;
+	int m_numContacts;
 };

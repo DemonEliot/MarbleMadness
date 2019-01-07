@@ -26,9 +26,9 @@
     <ClInclude Include="Client.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Marble.h" />
-    <ClInclude Include="Observer.h" />
-    <ClInclude Include="Player.h" />
+    <ClInclude Include="MyContactListener.h" />
     <ClInclude Include="Spawner.h" />
+    <ClInclude Include="TextDraw.h" />
     <ClInclude Include="TextInterpreter.h" />
     <ClInclude Include="Wall.h" />
     <ClInclude Include="World.h" />

@@ -8,6 +8,8 @@ public:
 	GenericSpawner(World* world) { gameWorld = world; };
 	~GenericSpawner();
 
+	void deleteVectors();
+
 	void createFromText(string entity, vector <float> fVector, Color textColor )
 	{
 		if (entity == "Wall")
@@ -29,7 +31,6 @@ public:
 		else
 		{
 			cerr << "Something went wrong with parsing in the text file into the spawner!" << endl;
-			exit(1);
 		}
 	};
 	//void addPrototype(Entity* newPrototype) { spawnPrototypes.push_back(newPrototype); };
@@ -53,6 +54,11 @@ private:
 
 GenericSpawner::~GenericSpawner()
 {
+	deleteVectors();
+};
+
+void GenericSpawner::deleteVectors()
+{
 	while (spawnWalls.size() != 0)
 	{
 		delete spawnWalls.back();
@@ -63,8 +69,4 @@ GenericSpawner::~GenericSpawner()
 		delete spawnMarbles.back();
 		spawnMarbles.pop_back();
 	}
-	delete spawn;
-	delete size;
-	delete color;
-	delete circleSize;
-};
+}

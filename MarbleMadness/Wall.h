@@ -36,7 +36,8 @@ public:
 
 		wallGraphic.setPosition(wallGraphicsPosition.x, wallGraphicsPosition.y);
 	};
-	
+	~Wall() {};
+
 	RectangleShape getGraphicBody()
 	{
 		return wallGraphic;

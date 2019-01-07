@@ -18,6 +18,7 @@ public:
 	void interpretLevelFile();
 	string* getFilePath();
 	void setFilePath(string* newFilePath);
+	bool levelsCheck();
 
 private:
 	string* filePath;
@@ -48,7 +49,6 @@ void TextInterpreter::initializeTextFiles()
 	if (!textFile->is_open())
 	{
 		cerr << "Text file unable to open" << endl;
-		exit(1);
 	}
 
 	while (getline(*textFile, line))
@@ -69,7 +69,6 @@ void TextInterpreter::interpretLevelFile()
 	if (!textFile->is_open())
 	{ 
 		cerr << "Text file unable to open" << endl;
-		exit(1);
 	}
 
 	levelCounter++;
@@ -90,7 +89,6 @@ void TextInterpreter::interpretLevelFile()
 				else if (tempString == "Marble") { createMarbleText(); }
 				else 
 				{	cerr << "Text file contains error" << endl; 
-					exit(1); 
 				}
 			}
 		}
@@ -224,4 +222,16 @@ string* TextInterpreter::getFilePath()
 void TextInterpreter::setFilePath(string* newFilePath)
 {
 	filePath = newFilePath;
+}
+
+bool TextInterpreter::levelsCheck()
+{
+	if (levelCounter >= levelVector.size())
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }

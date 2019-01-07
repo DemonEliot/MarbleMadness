@@ -9,26 +9,18 @@
 #include "Wall.h"
 #include "Bullet.h"
 #include "Marble.h"
-#include "Player.h"
 #include "Spawner.h"
-#include "Observer.h"
 #include "World.h"
 #include "TextInterpreter.h"
 #include "Client.h"
+#include "MyContactListener.h"
+#include "TextDraw.h"
 
 using namespace std;
 using namespace sf;
 
 void main()
 {
-	/* 
-	Render the game window.
-	myEvent is populated whenever something happens that SFML considers an event
-	e.g. mouse clicks, key pressing, etc.
-	*/
-	//RenderWindow window(VideoMode(1920, 1080), "Game Window");
-	//Event gameEvent;
-
 	World* gameWorld = new World();
 
 	GenericSpawner* spawner = new GenericSpawner(gameWorld);
@@ -43,6 +35,13 @@ void main()
 
 	Client* gameClient = new Client();
 	Vector2f* newPosition = { nullptr };
+
+	MyContactListener myContactListenerInstance;
+	gameWorld->getWorld()->SetContactListener(&myContactListenerInstance);
+
+	float score = 0;
+	TextDraw text;
+	bool levelChecker = false;
 
 	//Fixed time loop
 	float timeStep = 1.0f / 120.0f;
@@ -77,9 +76,15 @@ void main()
 				memcpy(newPosition, gameClient->getENetEvent()->packet->data, gameClient->getENetEvent()->packet->dataLength);
 				cout << newPosition->x << "," << newPosition->y << "\n";
 				
-				marbleVectors[1]->updateLinearVelocity(b2Vec2(newPosition->x, newPosition->y));
+				for (int i = 1; i < marbleVectors.size(); i++)
+				{
+					marbleVectors[i]->updateLinearVelocity(b2Vec2(newPosition->x, newPosition->y));
+				}
 
 				enet_packet_destroy(gameClient->getENetEvent()->packet);
+				break;
+
+			case ENET_EVENT_TYPE_NONE:
 				break;
 
 			case ENET_EVENT_TYPE_CONNECT:
@@ -114,6 +119,40 @@ void main()
 				marble->updateLinearVelocity(b2Vec2(0.0f, -0.1f));
 			}
 
+			// Press Space will create the new level
+			if (Keyboard::isKeyPressed(Keyboard::Space))
+			{
+				// Check if there are more levels to be loaded, so we don't crash...
+				levelChecker = textInterpreter.levelsCheck();
+				
+				if (levelChecker)
+				{
+					//First we delete the all of the objects in the wall and marble vectors
+					spawner->deleteVectors();
+
+					while (wallVectors.size() != 0)
+					{
+						wallVectors.pop_back();
+					}
+					while (marbleVectors.size() != 0)
+					{
+						marbleVectors.pop_back();
+					}
+					
+					// Load in the new text file
+					textInterpreter.interpretLevelFile();
+
+					marbleVectors = spawner->getMarble();
+					marble = marbleVectors[0];
+					wallVectors = spawner->getWall();
+					score = 0;
+				}
+				else
+				{
+					gameClient->getWindow()->close();
+				}
+			}
+
 			if (Keyboard::isKeyPressed(Keyboard::Escape))
 			{
 				gameClient->getWindow()->close();
@@ -135,9 +174,19 @@ void main()
 			marbleVectors[i]->updatePosition();
 			gameClient->getWindow()->draw(marbleVectors[i]->getMarbleGraphic());
 		}
+		
+		if (marbleVectors[0]->getNumContacts() > 0)
+		{
+			score++;
+			cout << int(score / 100) << endl;
+			text.setString(to_string(int(score / 120)));
+		}
+		gameClient->getWindow()->draw(text.getText());
 		gameClient->getWindow()->display();
 	}
 
 	enet_host_destroy(gameClient->getClient());
 	atexit(enet_deinitialize);
+
+	delete gameWorld;
 }
