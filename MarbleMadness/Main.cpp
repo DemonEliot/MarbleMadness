@@ -53,7 +53,7 @@ void main()
 	//Basic game loop using polling. Interrupt would be better.
 	while (gameClient->getWindow()->isOpen())
 	{
-
+		// With how much this is just calling functions from the game client, would be better to move all of this into the game client itself...
 		gameWorld->getWorld()->Step(timeStep, velocityIterations, positionIterations);
 
 		gameClient->getWindow()->pollEvent(gameClient->gameEvent);
@@ -69,18 +69,29 @@ void main()
 
 		while (enet_host_service(gameClient->getClient(), gameClient->getENetEvent(), 0) > 0)
 		{
+			newPosition = new Vector2f;
 			switch (gameClient->getENetEvent()->type) 
 			{
 			case ENET_EVENT_TYPE_RECEIVE:
 				cout << "Packet received!\n";
-				Vector2f* newPosition = new Vector2f;
 				memcpy(newPosition, gameClient->getENetEvent()->packet->data, gameClient->getENetEvent()->packet->dataLength);
 				cout << newPosition->x << "," << newPosition->y << "\n";
-				//enemy.setPosition(sf::Vector2f(newPosition->x, newPosition->y));
-				delete newPosition;
+				
+				marbleVectors[1]->updateLinearVelocity(b2Vec2(newPosition->x, newPosition->y));
+
 				enet_packet_destroy(gameClient->getENetEvent()->packet);
 				break;
+
+			case ENET_EVENT_TYPE_CONNECT:
+				cout << "Connected to server: " << gameClient->getENetEvent()->peer->address.host << ":" << gameClient->getENetEvent()->peer->address.port << ".\n";
+				break;
+
+			case ENET_EVENT_TYPE_DISCONNECT:
+				cout << "The server " << gameClient->getENetEvent()->peer->address.host << ":" << gameClient->getENetEvent()->peer->address.port << " disconnected \n";
+				gameClient->getENetEvent()->peer->data = NULL;
+				break;
 			}
+			delete newPosition;
 		}
 
 		if (gameClient->gameEvent.type == Event::KeyPressed)
@@ -113,8 +124,6 @@ void main()
 			marble->updateLinearVelocity(b2Vec2(0.0f, 0.0f));
 		}
 
-		marble->updatePosition();
-
 		// Draw the scene!
 		gameClient->getWindow()->clear(Color::Black);
 		for (int i = 0; i < wallVectors.size(); i++)
@@ -123,6 +132,7 @@ void main()
 		}
 		for (int i = 0; i < marbleVectors.size(); i++)
 		{
+			marbleVectors[i]->updatePosition();
 			gameClient->getWindow()->draw(marbleVectors[i]->getMarbleGraphic());
 		}
 		gameClient->getWindow()->display();

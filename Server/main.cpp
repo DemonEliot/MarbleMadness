@@ -37,18 +37,20 @@ void main()
 	background.setSize(sf::Vector2f(800, 600));
 	background.setPosition(0.0f, 0.0f);
 
-	sf::Texture backgroundTexture;
-	if (!backgroundTexture.loadFromFile("../Textures/background.png"))
+	//sf::Texture backgroundTexture;
+	//if (!backgroundTexture.loadFromFile("../Textures/background.png"))
 	{
-		cout << "Texture did not load!" << "\n";
+		//cout << "Texture did not load!" << "\n";
 	}
 
-	background.setTexture(&backgroundTexture);
+	//background.setTexture(&backgroundTexture);
 
 	/* Now we're declaring our Vector2 - this vector will be controlling the
 	position of an 'enemy' entity in the Client instance. */
 
 	sf::Vector2f position;
+	position = sf::Vector2f(0.0f, 0.05f);
+	int counter = 0;
 
 	/* We initialise the ENet library, and double-check this has worked. We then
 	declare a few library specific variables. An address (which represents the
@@ -88,9 +90,6 @@ void main()
 		cout << "Server failed to initialise!" << "\n\n";
 	}
 
-	position.x = 600.0f;
-	position.y = 300.0f;
-
 	while (window.isOpen())
 	{
 		window.pollEvent(e);
@@ -100,17 +99,7 @@ void main()
 
 		}
 
-		/* As we mentioned, ENet is event driven. This while loop checks to see if
-		the server has any events to respond to. We can use the event type to
-		determine how to respond to a given event. Note that there are multiple types
-		of ENet event - in this example, our server is only reacting to a client
-		connection being established (ENET_EVENT_TYPE_CONNECT) or a connection being
-		dropped (ENET_EVENT_TYPE_DISCONNECT). Note that given our sample Client uses
-		the enet_peer_disconnect_now function, there is no guarantee the server will
-		detect a disconnect event - that is something you can consider improving in your
-		own networking subsystem. */
-
-		while (enet_host_service(server, &enetEvent, 0) > 0)
+		while (enet_host_service(server, &enetEvent, 1000) > 0)
 		{
 			switch (enetEvent.type)
 			{
@@ -134,32 +123,42 @@ void main()
 			}
 		}
 
-		/* Now we handle out keyboard inputs, manipulating the values of the
-		position variable. Notice that these values are lower position changes
-		than the equivalents Client-side - that's because if you set them
-		equivalent, the server 'game loop' iterates far quicker than the client,
-		letting it 'move faster'. This illustrates the dangers of untimed game
-		loops which we highlighted last week. */
+		if (counter <= 2)
+		{
+			position.y = -0.05f;
+		}
 
+		else if (counter <= 3)
+		{
+			position.y = 0.05f;
+		}
+		else { counter = 0; }
+		
+		counter++;
+
+		
 		if (e.type == sf::Event::KeyPressed)
 		{
+			
+			/*
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
-				position.x += -0.2f;
+				position.x = -0.2f;
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
-				position.x += 0.2f;
+				position.x = 0.2f;
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 			{
-				position.y += -0.2f;
+				position.y = -0.2f;
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 			{
-				position.y += 0.2f;
+				position.y = 0.2f;
 			}
+			*/
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 			{
@@ -169,22 +168,25 @@ void main()
 				window.close();
 			}
 
-			cout << "The position of the entity is (" << position.x << "," << position.y << ")\n";
+			//cout << "The position of the entity is moving: (" << position.x << "," << position.y << ")\n";
 
-			/* We populate the packet we made earlier using the enet_packet_create function, which accepts
-			a reference to our Vector 2, the size of the data being sent (so, one Vector2 in this case), and
-			flags whether or not the packet receipt needs verifying (in this example, we say that it does,
-			but in reality it doesn't necessarily need to). The host then broadcasts the data packet to all
-			connected clients across Channel 0. */
+			//dataPacket = enet_packet_create(&position, sizeof(sf::Vector2f), ENET_PACKET_FLAG_RELIABLE);
+			//enet_host_broadcast(server, 0, dataPacket);
+		}
 
+		else
+		{
+			cout << "The position of the entity is moving: (" << position.x << "," << position.y << ")\n";
 			dataPacket = enet_packet_create(&position, sizeof(sf::Vector2f), ENET_PACKET_FLAG_RELIABLE);
 			enet_host_broadcast(server, 0, dataPacket);
+			
 		}
+		
 
 		/* Basic draw functionality for SFML, making sure our texture appears. */
 
 		window.clear(sf::Color::Blue);
-		window.draw(background);
+		//window.draw(background);
 		window.display();
 	}
 
